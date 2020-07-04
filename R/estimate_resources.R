@@ -8,7 +8,7 @@
 #' Since any cluster has some memory overhead, we can't just divide all available memory between cores (we either run out of memory or start an slow & expensive writing to disk). 
 #' Default value is 0.05 which means 5% of <total memory size> is assumed as memory overhead per core (so each core takes out an additional 5% of available memory for calculations and we can't use more than \code{1/0.05 - 1 = 19} cores). 
 #' If performance slows when you increase number of cores (or you can see intensive I/O activity) consider increasing this parameter. This will break down the calculation to smaller chunks.
-#' @param min_block_factor A number between (0,1). 
+#' @param min_block_fraction A number between (0,1). 
 #' What is the minimum fraction of memory that still allows block calculations? 
 #' If we establish that per-block memory is below this fraction the recommendation will be to default to loop calculations. Default is 0.05. 
 #' On headless systems with multiple cores and lots of memory and the recommendation is to loop, you might want to set this value to a lower threshold (or 0 to disable this completely)

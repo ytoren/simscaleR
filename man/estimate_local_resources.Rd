@@ -2,7 +2,7 @@
 % Please edit documentation in R/estimate_resources.R
 \name{estimate_local_resources}
 \alias{estimate_local_resources}
-\title{Simple resource estimations}
+\title{Simple resource estimator}
 \usage{
 estimate_local_resources(
   do_gc = TRUE,
@@ -23,16 +23,16 @@ Since any cluster has some memory overhead, we can't just divide all available m
 Default value is 0.05 which means 5% of <total memory size> is assumed as memory overhead per core (so each core takes out an additional 5% of available memory for calculations and we can't use more than \code{1/0.05 - 1 = 19} cores). 
 If performance slows when you increase number of cores (or you can see intensive I/O activity) consider increasing this parameter. This will break down the calculation to smaller chunks.}
 
-\item{verbose}{Logical. Should informative messages be printed along the way?}
-
-\item{min_block_factor}{A number between (0,1). 
+\item{min_block_fraction}{A number between (0,1). 
 What is the minimum fraction of memory that still allows block calculations? 
 If we establish that per-block memory is below this fraction the recommendation will be to default to loop calculations. Default is 0.05. 
 On headless systems with multiple cores and lots of memory and the recommendation is to loop, you might want to set this value to a lower threshold (or 0 to disable this completely)}
+
+\item{verbose}{Logical. Should informative messages be printed along the way?}
 }
 \value{
-A list with \code{n_cpu=} number of detected cores, \code{block_memory=} memory per block as calculated by the function (\code{NA} if OS or memory limit are not detected).
+A list with \code{n_cpu=} number of detected cores, \code{block_memory=} available memory per core as calculated by the function (\code{NA} if OS or memory limit are not detected).
 }
 \description{
-Estimate number of CPU and memory size for the current system
+Estimate number of cores and available memory per core for the current system
 }
