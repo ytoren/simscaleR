@@ -1,0 +1,25 @@
+Package: simscaleR
+Type: Package
+Title: Large scale similarity calculations
+Version: 0.1.0
+Author: Yizhar (Izzy) Toren
+Maintainer: Yizhar (Izzy) Toren <ytoren+cran@gmail.com>
+Description: This package calculates similarity with some considerations for large scale: 
+    * The ability to add a minimal similarity threshold and store sparse structures (instead of the full dense similarity structure).
+    * Control over the distribution of the calculation: from single-machine to fully distributed (with some smart compromises).
+License: Apache License Version 2.0
+Encoding: UTF-8
+LazyData: true
+Imports:
+    Matrix,
+    methods,
+    parallel,
+    foreach,
+    doParallel,
+    Rcpp
+RoxygenNote: 7.1.1
+Suggests: 
+    testthat
+LinkingTo: 
+    Rcpp,
+    testthat

@@ -1,0 +1,56 @@
+#' @title Choose a similarity calculation method based on simple resource estimations
+#' @description Estimate number of CPU and memory size for the current system and use these numbers to choose the appropriate calculation method (loops / matrix multiplication, see \code{\link[simscaleR:sim_loopR]{sim_loopR}})
+
+#' @param resources An optional list with \code{n_cpu} and \code{block_memory}. Default is \code{NA} which calls \code{\link[simscaleR:estimate_local_resources]{estimate_local_resources}}
+#' @param memory_reg A numeric vector with 2 items. First place is the intercept and second place is the coefficient for log(10) of number of cells. See example.
+#' @param verbose Logical. Should informative messages be printed along the way?
+#' @param ... Additional parameters passed to \code{\link[simscaleR:estimate_local_resources]{estimate_local_resources}} (when \code{resources = NA})
+#' @return A function to calculate similarity with \code{n_cpu} set according to the recommendations. You need to provide \code{X, metric} and \code{thresh} if needed (defaults to 0). For more details see \code{\link[simscaleR:sim_loopR]{sim_loopR}})
+#' 
+#' @examples 
+#' # How to calculate the regression coefficients on your system
+#' memory_capacity <- data.frame(cells_log10 = 2:7, size = NA)
+#'
+#' for (i in 1:nrow(memory_capacity)) {
+#'   gc(full = TRUE)
+#'   #!! try calc, on error NA
+#'   memory_capacity[i, 'size_Mb'] <- tryCatch(
+#'     as.numeric(object.size(Matrix::Matrix(data = 1.1, nrow = (10^memory_capacity[i, 'cells_log10'])/2, ncol = 2))) / (1024^2),
+#'     error = function() NA
+#'   )
+#'   
+#'   if (is.na(memory_capacity[i, 'size_Mb'])) {break}
+#' }
+#' 
+#'\dontrun{plot(log10(size_Mb) ~ cells_log10, data = memory_capacity)}
+#' mem_lm <- lm(log10(size_Mb) ~ cells_log10, data = memory_capacity)
+#' summary(mem_lm)
+#' 
+#' @export 
+sim_auto_scale <- function(n_rows, resources = NA, reg_coeff = c(-4.76483, 0.93864), verbose = FALSE, ...) {
+  if (is.na(resources)[1]) {resources <- estimate_local_resources(...)}
+  
+  if (is.na(resources[['block_memory']])) {
+    if (verbose) {
+      message(paste0('Could not identify OS / memory limit or memory limit is too low for block calculations. Defaulting to simple R loops over ', resources[['n_cpu']], ' cores'))
+    }
+    
+    f <- function(X, metric, thresh = 0) {
+      sim_loopR(X = X, metric = metric, thresh = thresh, n_cpu = resources[['n_cpu']])
+    }
+  } else {
+    resources[['max_cells']] <- floor(10 ^ ((log10(resources[['block_memory']]) - reg_coeff[1]) / reg_coeff[2]))
+    resources[['row_blocks']] <- ceiling(n_rows^2 / resources[['max_cells']])
+    if (verbose) {
+      message(paste0('Max cells is ', resources[['max_cells']], ' which means we can use ', resources[['row_blocks']], ' blocks over ', resources[['n_cpu']], ' cores'))
+    }
+    
+    f <- function(X, metric, thresh = 0) {
+      sim_blocksR(X = X, metric = metric, row_blocks = resources[['row_blocks']], thresh = thresh, n_cpu = resources[['n_cpu']])
+    }
+  }
+  
+  attr(f, 'resources') <- resources
+  return(f)     
+  
+}
