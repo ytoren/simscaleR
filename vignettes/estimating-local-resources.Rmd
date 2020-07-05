@@ -1,0 +1,122 @@
+---
+title: "Estimating local resources"
+output: rmarkdown::html_vignette
+date: "`r Sys.Date()`"
+vignette: >
+  %\VignetteIndexEntry{Estimating local resources}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = ">"
+)
+```
+
+## Memory limits for the similarity matrix
+
+One of the biggest constraints for calculating similarity in-memory is the sheer size of the similarity matrix. for example, when calculating the "all vs. all" similarity for $n$ observations, the number of cells in the similarity matrix grows on the scale of $n^2$. 
+
+A naive solution (which also generalises well to any kind of similarity metric) would be to iterate over all row combinations (a `for` loop within a `for` loop), calculate the similarity measure for each pair, and write each result to file(s). This approach comes with a heavy price - `for` loops in R tend to be slow, and the act of writing to disk has some overhead, even if (as is the case for this package) we don't intend to use all the values. 
+
+Therefore we are interested in 2 pieces of information: 
+
+1) What is the largest matrix we can store in-memory. Working in blocks we can at the very least  avoid the overhead of multiple writes to disk, and for some metrics avoid loop iterations with a block-wise approach (see function `sim_blocksR`)
+
+2) A quick way to estimate matrix memory footprint. We want to want to avoid situations where we try to construct a matrix (or a part of it) only to discover we ran out of memory. 
+
+## Estimating matrix size & memory limits
+
+We usually have some idea of the maximal size of items we want to calculate. For this example (running on my laptop) we will stop at ~25k rows (and try in steps of 1000). If you're not sure about the machine you're going to use you might want to set a higher maximum with less steps just to find the limit. 
+
+```{r define_calc}
+max_rows <- 25000
+steps <- 25
+```
+
+For each number of rows `n` we create a `n x n` matrix and estimate the size of the object in Mb. We stop (and print a warning) when we run out of memory.
+
+```{r estimate}
+capacity <- data.frame(rows = max_rows * (1:steps) / steps , size_Mb = NA)
+
+for (i in 1:nrow(capacity)) {
+  gc(full = TRUE)
+  
+  capacity[i, 'size_Mb'] <- tryCatch(
+    as.numeric(
+      object.size(
+        Matrix::Matrix(
+          data = 1.1, 
+          nrow = capacity[i, 'rows'], 
+          ncol = capacity[i, 'rows']
+        )
+      )
+    ) / (1024^2),
+    error = function(error) NA
+  )
+  
+  if (is.na(capacity[i, 'size_Mb'])) {
+    print(paste0('Memory limit reached under ', capacity[i, 'rows'], ' rows^2'))
+    if (i > 1) {print(paste0('But we were able to allocate ', capacity[i-1, 'rows'], ' rows^2'))}
+    break
+  }
+}
+```
+
+We don't take this limit too seriously! Especially for interactive machines (your laptop running a GUI and other programs in the background) memory availability and performance can change, depending on circumstances (what else is running in the background, virtual memory policies, etc.). Instead, we can use the scale of the limit as an upper bound. 
+
+Furthermore, we can use the data we collected to extrapolate the memory footprint for any given number of rows: we expect a pretty linear relationship between the memory footprint and number of rows squared ($n^2$) maybe with some overhead. So... let's do data science!
+
+```{r lm_intercept}
+mem_lm <- lm(size_Mb ~ I(rows^2), data = capacity)
+print(summary(mem_lm))
+```
+
+The intercept seems negligible, so we can try a proportional approach: 
+
+```{r lm_prop}
+mem_lm <- lm(size_Mb ~ I(rows^2) - 1, data = capacity)
+print(summary(mem_lm))
+```
+
+Look good! 
+
+```{r plot_prop, fig.width=75, fig.height=5}
+rows2_coeff <- mem_lm$coefficients[1]
+plot(
+  formula = size_Mb ~ I(rows^2), 
+  data = capacity[!is.na(capacity$size_Mb) ,], 
+  ylab = 'Memory footprint (Mb)',
+  xlab = 'Rows^2'
+)
+abline(a = 0, b = rows2_coeff, col = 4, lty = 2, lwd = 2)
+```
+
+## Let's get practical (and parallel)
+
+We can use the both coefficient and the cap (or at least scale of it) do make better decisions about how to split the similarity calculation. The use case for this package is a situation where we are only interested in similarities above a certain threshold, which means that as a sparse matrix, the final similarity structure is not very large (on the order of $o(n log(n))$ rows).
+
+```{r show_coef}
+print(paste0('Row cap: ~', max(capacity$rows), ', Object size coef: ', rows2_coeff))
+```
+
+### Single core 
+
+We have 2 options: 
+
+1. "Slow and steady": `for` loops (where we check each time if the value is above the threshold and decide if we include it or not. See `sim_loopR` with `n_cpu = 1` in this package)
+
+2. "Dense first": Calculate the full dense $n^2$ size structure in memory (for example with matrix multiplication where possible) and use thresholds to build the sparse structure. 
+
+We can use cap we obtained to decide which of the 2 options we take (as long as the number of rows is under the "row cap" we can use the "Dense first" approach (which is typically orders of magnitude faster).
+
+### Multi core 
+
+The memory cap we calculated was for a single core using all available memory. In a multi-core scenario we have to consider the fact that memory is shared by all cores on the same machine. We should also consider the fact that most parallelisation mechanisms have some memory overhead per-core (for example a FORK cluster replicated the entire environment per core).
+
+All of these considerations are encapsulated by the `estimate_local_resource` function and `sim_auto_scale` function in this package (see documentation).
+
+
+

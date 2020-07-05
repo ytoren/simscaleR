@@ -31,7 +31,11 @@ On headless systems with multiple cores and lots of memory and the recommendatio
 \item{verbose}{Logical. Should informative messages be printed along the way?}
 }
 \value{
-A list with \code{n_cpu=} number of detected cores, \code{block_memory=} available memory per core as calculated by the function (\code{NA} if OS or memory limit are not detected).
+A list with: 
+\itemize{
+\item \code{n_cpu}: Number of detected cores
+\item \code{block_memory}: which stands for available memory per core, calculated as \code{max_memory} \code{*} \code{( 1.0 / n_cpu - overhead_factor)}. If OS or memory limit are not detected or block size is less than the size defined by \code{min_block_fraction} then this will be \code{NA}.
+}
 }
 \description{
 Estimate number of cores and available memory per core for the current system

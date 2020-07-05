@@ -7,7 +7,8 @@
 sim_auto_scale(
   n_rows,
   resources = NA,
-  reg_coeff = c(-4.76483, 0.93864),
+  row2mem_coeff = 7.62940039228619e-06,
+  row_cap = NA,
   verbose = FALSE,
   ...
 )
@@ -17,7 +18,9 @@ sim_auto_scale(
 
 \item{resources}{An optional list with \code{n_cpu} and \code{block_memory}. Default is \code{NA} which calls \code{\link[simscaleR:estimate_local_resources]{estimate_local_resources}}}
 
-\item{reg_coeff}{A numeric vector with 2 items. First place is the intercept and second place is the coefficient for log(10) of number of cells. See example.}
+\item{row2mem_coeff}{Float. The coefficient that converts between \code{nrows^2} and object memory size in Mb. See \code{vignette('estimating-local-resources.Rmd', package = 'simscaleR')}.}
+
+\item{row_cap}{Integer. Maximum number of rows for this machine. See \code{vignette('estimating-local-resources.Rmd', package = 'simscaleR')}. Default is \code{NA} which means no limit is applied}
 
 \item{verbose}{Logical. Should informative messages be printed along the way?}
 
@@ -31,23 +34,4 @@ Estimate number of CPU and memory size for the current system and use these numb
 }
 \examples{
 \dontrun{sim_matrix <- auto_sim_scale(nrow(X))(X, 'cosine', thresh = 0.8)}
-
-# How to calculate the regression coefficients on your system
-memory_capacity <- data.frame(cells_log10 = 2:7, size = NA)
-
-for (i in 1:nrow(memory_capacity)) {
-  gc(full = TRUE)
-  #!! try calc, on error NA
-  memory_capacity[i, 'size_Mb'] <- tryCatch(
-    as.numeric(object.size(Matrix::Matrix(data = 1.1, nrow = (10^memory_capacity[i, 'cells_log10'])/2, ncol = 2))) / (1024^2),
-    error = function() NA
-  )
-  
-  if (is.na(memory_capacity[i, 'size_Mb'])) {break}
-}
-
-\dontrun{plot(log10(size_Mb) ~ cells_log10, data = memory_capacity)}
-mem_lm <- lm(log10(size_Mb) ~ cells_log10, data = memory_capacity)
-print(summary(mem_lm))
-
 }

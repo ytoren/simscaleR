@@ -13,8 +13,11 @@
 #' If we establish that per-block memory is below this fraction the recommendation will be to default to loop calculations. Default is 0.05. 
 #' On headless systems with multiple cores and lots of memory and the recommendation is to loop, you might want to set this value to a lower threshold (or 0 to disable this completely)
 #' @param verbose Logical. Should informative messages be printed along the way?
-#' @return A list with \code{n_cpu=} number of detected cores, \code{block_memory=} available memory per core as calculated by the function (\code{NA} if OS or memory limit are not detected).
-#' 
+#' @return A list with: 
+#' \itemize{
+#' \item \code{n_cpu}: Number of detected cores
+#' \item \code{block_memory}: which stands for available memory per core, calculated as \code{max_memory} \code{*} \code{( 1.0 / n_cpu - overhead_factor)}. If OS or memory limit are not detected or block size is less than the size defined by \code{min_block_fraction} then this will be \code{NA}.
+#' }
 #' @importFrom utils memory.limit
 #' @importFrom parallel detectCores
 #' @export 
