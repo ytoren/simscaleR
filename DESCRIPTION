@@ -15,14 +15,10 @@ Imports:
     methods,
     parallel,
     foreach,
-    doParallel,
-    Rcpp
+    doParallel
 RoxygenNote: 7.1.1
 Suggests: 
     testthat,
     knitr,
     rmarkdown
-LinkingTo: 
-    Rcpp,
-    testthat
 VignetteBuilder: knitr
