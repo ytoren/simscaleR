@@ -29,11 +29,11 @@ Therefore we are interested in 2 pieces of information:
 
 ## Estimating matrix size & memory limits
 
-We usually have some idea of the maximal size of items we want to calculate. For this example (running on my laptop) we will stop at ~25k rows (and try in steps of 1000). If you're not sure about the machine you're going to use you might want to set a higher maximum with less steps just to find the limit. 
+We usually have some idea of the maximal size of items we want to calculate. For the purpose of this example we will stop at 5000 rows (and try in steps of 100) but on a strong laptop you should try increasing the limit to around 25k or more. If you're not sure about the machine you're going to use you might want to set a higher maximum with less steps just to find the limit. 
 
 ```{r define_calc}
-max_rows <- 25000
-steps <- 25
+max_rows <- 5000
+steps <- 50
 ```
 
 For each number of rows `n` we create a `n x n` matrix and estimate the size of the object in Mb. We stop (and print a warning) when we run out of memory.
@@ -81,9 +81,9 @@ mem_lm <- lm(size_Mb ~ I(rows^2) - 1, data = capacity)
 print(summary(mem_lm))
 ```
 
-Look good! 
+Looks good! 
 
-```{r plot_prop, fig.width=75, fig.height=5}
+```{r plot_prop, fig.width=7, fig.height=5}
 rows2_coeff <- mem_lm$coefficients[1]
 plot(
   formula = size_Mb ~ I(rows^2), 
