@@ -19,7 +19,7 @@ test_that('Row cosine sparse similarity calulation', {
   expect_equal(sim_blocksR(X, metric = 'cosine', row_blocks = 3), sim_expected, tolerance = 1e-07)
   expect_equal(sim_blocksR(X, metric = 'cosine', row_blocks = 3, n_cpu = 2), sim_expected, tolerance = 1e-07)
   expect_equal(sim_loopR(X, metric = 'cosine', n_cpu = 1), sim_expected, tolerance = 1e-07)
-  expect_equal(sim_loopR(X, metric = 'cosine', n_cpu = 4), sim_expected, tolerance = 1e-07)
+  expect_equal(sim_loopR(X, metric = 'cosine', n_cpu = 2), sim_expected, tolerance = 1e-07)
   
   sim_expected[sim_expected < 0.9] <- 0
   sim_expected <- methods::as(sim_expected, "symmetricMatrix")
@@ -27,7 +27,7 @@ test_that('Row cosine sparse similarity calulation', {
   expect_equal(sim_blocksR(X, metric = 'cosine', thresh = 0.9, row_blocks = 3), sim_expected, tolerance = 1e-07)
   expect_equal(sim_blocksR(X, metric = 'cosine', thresh = 0.9), sim_expected, tolerance = 1e-07)
   expect_equal(sim_loopR(X, metric = 'cosine', thresh = 0.9, n_cpu = 1), sim_expected, tolerance = 1e-07)
-  expect_equal(sim_loopR(X, metric = 'cosine', thresh = 0.9, n_cpu = 4), sim_expected, tolerance = 1e-07)
+  expect_equal(sim_loopR(X, metric = 'cosine', thresh = 0.9, n_cpu = 2), sim_expected, tolerance = 1e-07)
   
   # Xn <- matrix(rep(X, 10000), ncol=3)
   # Xn_size <- as.numeric(gsub('[^0-9.,]', '', format(object.size(Xn), units = "Mb", standard = "legacy")))
@@ -46,14 +46,13 @@ test_that('Row Hamming sparse similarity calculation', {
   expect_equal(sim_blocksR(X, metric = 'hamming', row_blocks = 3, include_diag = FALSE), sim_expected)
   expect_equal(sim_loopR(X, metric = 'hamming', include_diag = FALSE), sim_expected)
   expect_equal(sim_loopR(X, metric = 'hamming', n_cpu = 2, include_diag = FALSE), sim_expected)
-  expect_equal(sim_loopR(X, metric = 'hamming', n_cpu = -1, include_diag = FALSE), sim_expected)
-  
+
   sim_expected[sim_expected < 0.75] <- 0
   sim_expected <- Matrix::drop0(sim_expected)
   sim_expected <- methods::as(sim_expected, "symmetricMatrix")
   expect_equal(sim_blocksR(X, metric = 'hamming', thresh = 0.75, include_diag = FALSE), sim_expected)
   expect_equal(sim_blocksR(X, metric = 'hamming', thresh = 0.75, row_blocks = 3, include_diag = FALSE), sim_expected)
   expect_equal(sim_loopR(X, metric = 'hamming', thresh = 0.75, include_diag = FALSE), sim_expected)
-  expect_equal(sim_loopR(X, metric = 'hamming', thresh = 0.75, , n_cpu = 4, include_diag = FALSE), sim_expected)
+  expect_equal(sim_loopR(X, metric = 'hamming', thresh = 0.75, , n_cpu = 2, include_diag = FALSE), sim_expected)
   
 })
