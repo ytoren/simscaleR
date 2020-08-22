@@ -39,7 +39,8 @@ test_that('Row Hamming sparse similarity calculation', {
   expect_equal(sim_blocksR(X, metric = 'hamming', include_diag = FALSE), sim_expected)
   expect_equal(sim_blocksR(X, metric = 'hamming', row_blocks = 3, include_diag = FALSE), sim_expected)
   expect_equal(sim_loopR(X, metric = 'hamming', include_diag = FALSE), sim_expected)
-  expect_equal(sim_loopR(X, metric = 'hamming', n_cpu = 4, include_diag = FALSE), sim_expected)
+  expect_equal(sim_loopR(X, metric = 'hamming', n_cpu = 2, include_diag = FALSE), sim_expected)
+  expect_equal(sim_loopR(X, metric = 'hamming', n_cpu = -1, include_diag = FALSE), sim_expected)
   
   sim_expected[sim_expected < 0.75] <- 0
   sim_expected <- Matrix::drop0(sim_expected)
@@ -47,4 +48,6 @@ test_that('Row Hamming sparse similarity calculation', {
   expect_equal(sim_blocksR(X, metric = 'hamming', thresh = 0.75, include_diag = FALSE), sim_expected)
   expect_equal(sim_blocksR(X, metric = 'hamming', thresh = 0.75, row_blocks = 3, include_diag = FALSE), sim_expected)
   expect_equal(sim_loopR(X, metric = 'hamming', thresh = 0.75, include_diag = FALSE), sim_expected)
+  expect_equal(sim_loopR(X, metric = 'hamming', thresh = 0.75, , n_cpu = 4, include_diag = FALSE), sim_expected)
+  
 })
