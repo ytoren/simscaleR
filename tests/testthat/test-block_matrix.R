@@ -10,4 +10,10 @@ test_that('Block constructions', {
   )
   
   expect_equal(sparse_block_matrix(c(1,2,3)), expected)
+  
+  expect_equal(sparse_block_matrix(c(1,2,3), values = 10), expected * 10)
+  
+  expect_error(sparse_block_matrix(c(1,2,3), values = c(1,2)), regexp = 'differ')
+  
 })
+  
