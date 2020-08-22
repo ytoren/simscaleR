@@ -4,7 +4,7 @@
 \alias{merge_by_partition}
 \title{Merge matrix rows by a partition}
 \usage{
-merge_by_partition(m, partition, agg = colSums)
+merge_by_partition(m, partition, agg = Matrix::colSums)
 }
 \arguments{
 \item{m}{A matrix}
