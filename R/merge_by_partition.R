@@ -61,7 +61,18 @@ merge_by_partition <- function(m, partition, agg = Matrix::colSums) {
     decreasing = TRUE
   )
 
-  m_col_merged <- t(merge_rows_by_partition_(m, partition, merge_order))
-  return(merge_rows_by_partition_(m_col_merged, partition, merge_order))
+  # Merge rows, transpose (now cols are merged) and merge rows again
+  return(
+    merge_rows_by_partition_(
+      t(
+        merge_rows_by_partition_(
+          m, 
+          partition, 
+          merge_order
+        )
+      ), 
+      partition, 
+      merge_order)
+  )
 }
 
