@@ -7,7 +7,8 @@ Maintainer: Yizhar (Izzy) Toren <ytoren+cran@gmail.com>
 Description: This package calculates similarity with some considerations for large scale: 
     * The ability to add a minimal similarity threshold and store sparse structures (instead of the full dense similarity structure).
     * Control over the distribution of the calculation: from single-machine to fully distributed (with some smart compromises).
-License: Apache License Version 2.0
+    * "Injection" of domain knowledge, in the form of external information on groups of items that are similar.
+License: file LICENSE
 URL: https://github.com/ytoren/simscaleR
 BugReports: https://github.com/ytoren/simscaleR/issues
 Encoding: UTF-8

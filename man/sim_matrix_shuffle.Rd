@@ -7,9 +7,9 @@
 sim_matrix_shuffle(X, row_order)
 }
 \arguments{
-\item{row_order}{Integer vector, a permutation of \code{1:nrow(m)}.}
+\item{X}{Matrix}
 
-\item{m}{Matrix}
+\item{row_order}{Integer vector, a permutation of \code{1:nrow(m)}.}
 }
 \value{
 A re-arranged similarity matrix (sparse & symmetric)
