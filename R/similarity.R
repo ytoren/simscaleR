@@ -37,7 +37,7 @@ sim_loopR <- function(X, metric, thresh = 0.0, n_cpu = 1, cl = NA) {
       storage.mode(X) <- 'numeric'
       X <- X / sqrt(rowSums(X^2))
       row_sim <- function(x, y) {sum(x * y)}  
-    } else if (tolower(metric) == 'haming') {
+    } else if (tolower(metric) == 'hamming') {
       X <- X != 0.0
       row_sim <- function(x, y) {sum((x & y) + ((!x) & !(y))) / length(x)}
     } else {stop(ERROR_MESSAGE_METRIC)}
@@ -51,7 +51,7 @@ sim_loopR <- function(X, metric, thresh = 0.0, n_cpu = 1, cl = NA) {
     for (i in 1:nrow(X)) {
       for (j in 1:i) {
         s <- row_sim(X[i,], X[j,])
-        if (s > thresh) {S[i,j] <- s; S[j,i] <- s}
+        if (s >= thresh) {S[i,j] <- s; S[j,i] <- s}
       }
     }    
     
@@ -85,15 +85,6 @@ sim_loopR <- function(X, metric, thresh = 0.0, n_cpu = 1, cl = NA) {
   }
 
   return(S)
-}
-
-
-# @describeIn sim_loopR Generate similarity matrix using a C loop
-# @export 
-sim_loopCpp <- function(X, metric, thresh = 0.0, sparse = TRUE) {
-  ## Next step: RcppEigen
-  ## Next step: faster with CPU SIMD
-  return(NA)
 }
 
 
