@@ -1,11 +1,11 @@
 #' @keywords internal
-merge_rows_ <- function(m, row_range, agg = colSums) {
+merge_rows_ <- function(m, row_range, agg = Matrix::colSums) {
   N <- nrow(m)
   end <- max(row_range)
   start <- min(row_range)
   
   if (end > N | start < 1) { stop('start / end should match matrix size') }
-  if (start == 1 & end == N) { return(f(m)) }
+  if (start == 1 & end == N) { return(agg(m)) }
   
   if (start == 1) {
     m_above <- NULL
@@ -24,7 +24,7 @@ merge_rows_ <- function(m, row_range, agg = colSums) {
 
 
 #' @keywords internal
-merge_rows_by_partition_ <- function(m, partition, merge_order, agg = colSums) {
+merge_rows_by_partition_ <- function(m, partition, merge_order, agg = Matrix::colSums) {
   for (p in merge_order) {
     if (length(partition[[p]]) == 1) {next}
     m <- merge_rows_(m, partition[[p]], agg)
@@ -41,7 +41,7 @@ merge_rows_by_partition_ <- function(m, partition, merge_order, agg = colSums) {
 #' @param partition A list of integer vectors. Each vector can contain all rows in the group or just first & last rows (min/max will be used to extract range)
 #' @param agg Function. The function that will be called to merge the rows. Must return a matrix with the same number of columns and as many rows as needed. Default is `colSums`.
 #' @return A new matrix with less (or more?) rows, depending on the aggregation function.
-merge_by_partition <- function(m, partition, agg = colSums) {
+merge_by_partition <- function(m, partition, agg = Matrix::colSums) {
   ## Check that partition is... a partition
   if (!all(sort(unlist(partition)) == 1:nrow(m))) {stop('Missing / too many indices in partition')}
   invisible(

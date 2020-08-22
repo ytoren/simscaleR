@@ -9,6 +9,8 @@ m <- matrix(
   byrow = TRUE
 )
 
+m <- Matrix::Matrix(m, sparse = TRUE)
+
 partition <- list(c(2,3,4), c(5,6), 1)
 merge_order <- c(2,1,3)
 
