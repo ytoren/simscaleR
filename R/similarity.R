@@ -7,6 +7,8 @@ ERROR_MESSAGE_METRIC = 'Only cosine and Hamming metric are supported (and custom
 
 #' @importFrom Matrix Matrix
 #' @importFrom Matrix sparseMatrix
+#' @importFrom Matrix drop0
+#' @importFrom Matrix diag
 #' @importFrom methods as
 #' @importFrom parallel makeCluster
 #' @importFrom parallel stopCluster
@@ -24,12 +26,13 @@ ERROR_MESSAGE_METRIC = 'Only cosine and Hamming metric are supported (and custom
 #' @param thresh Float. Minimal similarity threshold to be returned. Values below are converted to 0 (to allow sparse representation). Default is 0.0
 #' @param n_cpu Integer. Number of cores to use for the local cluster (using the \code{doParallel} and \code{parallel} backend). Default is 1 which results in a simple R loop. Negative numbers are interpreted as "all CPU expect".
 #' @param cl A cluster object, pointing to the cluster to be used instead of a local cluster. This option overrides the \code{n_cpu} parameter.
+#' @param include_diag Logical. Should the diagonal of 1 be included in the matrix? This can help save memory. Default is \code{TRUE}.
 #' @return An object of \code{symmetricMatrix} class. Default is a sparse matrix but this can be modified using the \code{sparse} parameter
 
 
 #' @describeIn sim_loopR Generate sparse similarity matrix using simple R loop in a single thread or a cluster
 #' @export 
-sim_loopR <- function(X, metric, thresh = 0.0, n_cpu = 1, cl = NA) {
+sim_loopR <- function(X, metric, thresh = 0.0, n_cpu = 1, cl = NA, include_diag = TRUE) {
   X <- as.matrix(X)
   
   if (class(metric) == 'character') {
@@ -50,6 +53,7 @@ sim_loopR <- function(X, metric, thresh = 0.0, n_cpu = 1, cl = NA) {
 
     for (i in 1:nrow(X)) {
       for (j in 1:i) {
+        if ((i == j) & !include_diag) {next}
         s <- row_sim(X[i,], X[j,])
         if (s >= thresh) {S[i,j] <- s; S[j,i] <- s}
       }
@@ -71,6 +75,7 @@ sim_loopR <- function(X, metric, thresh = 0.0, n_cpu = 1, cl = NA) {
     raw_S <- foreach(i = 1:n, .combine=rbind) %dopar% {
       row_sim_matrix <- matrix(0, nrow = 0, ncol = 3)
       for (j in i:n) {
+        if ((i == j) & !include_diag) {next}
         s = row_sim(X[i,], X[j,])
         if (s > thresh) {
           row_sim_matrix <- rbind(row_sim_matrix, c(i, j, s))
@@ -100,7 +105,7 @@ hamming_similarity_ <- function(X,Y) {
 
 #' @describeIn sim_loopR Generate sparse similarity matrix using block-wise matrix multiplication
 #' @export 
-sim_blocksR <- function(X, metric, row_blocks = 1, thresh = 0.0, n_cpu = 1, cl = NA) {
+sim_blocksR <- function(X, metric, row_blocks = 1, thresh = 0.0, n_cpu = 1, cl = NA, include_diag = TRUE) {
   X <- as.matrix(X)
   rows <- ceiling(nrow(X) / row_blocks)
   
@@ -146,6 +151,12 @@ sim_blocksR <- function(X, metric, row_blocks = 1, thresh = 0.0, n_cpu = 1, cl =
       Matrix(Sb, sparse = TRUE)
     }
   }
+  S <- as(Reduce(cbind, S_sparse_list), "symmetricMatrix")
   
-  return(as(Reduce(cbind, S_sparse_list), "symmetricMatrix"))
+  if (!include_diag) {
+    Matrix::diag(S) <- 0
+    S <- Matrix::drop0(S)
+  }
+  
+  return(S)
 }

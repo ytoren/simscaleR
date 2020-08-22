@@ -5,9 +5,17 @@
 \alias{sim_blocksR}
 \title{Generate similarity matrix using different methods}
 \usage{
-sim_loopR(X, metric, thresh = 0, n_cpu = 1, cl = NA)
+sim_loopR(X, metric, thresh = 0, n_cpu = 1, cl = NA, include_diag = TRUE)
 
-sim_blocksR(X, metric, row_blocks = 1, thresh = 0, n_cpu = 1, cl = NA)
+sim_blocksR(
+  X,
+  metric,
+  row_blocks = 1,
+  thresh = 0,
+  n_cpu = 1,
+  cl = NA,
+  include_diag = TRUE
+)
 }
 \arguments{
 \item{X}{A matrix, or an object that can be coerced into a matrix. Values depend on the type of metric used (numeric, 1/0 integers, etc.)}
@@ -19,6 +27,8 @@ sim_blocksR(X, metric, row_blocks = 1, thresh = 0, n_cpu = 1, cl = NA)
 \item{n_cpu}{Integer. Number of cores to use for the local cluster (using the \code{doParallel} and \code{parallel} backend). Default is 1 which results in a simple R loop. Negative numbers are interpreted as "all CPU expect".}
 
 \item{cl}{A cluster object, pointing to the cluster to be used instead of a local cluster. This option overrides the \code{n_cpu} parameter.}
+
+\item{include_diag}{Logical. Should the diagonal of 1 be included in the matrix? This can help save memory. Default is \code{TRUE}.}
 
 \item{row_blocks}{Integer. How to divide matrix rows into blocks for block-wise similarity calculation (using matrix multiplication). Default is 1 which means similarity is calculated in a single step.}
 
