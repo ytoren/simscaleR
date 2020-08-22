@@ -150,6 +150,8 @@ sim_blocksR <- function(X, metric, row_blocks = 1, thresh = 0.0, n_cpu = 1, cl =
       if (thresh > 0) {Sb[Sb < thresh] <- 0}
       Matrix(Sb, sparse = TRUE)
     }
+    
+    if (stop_cl) {stopCluster(cl)}
   }
   S <- as(Reduce(cbind, S_sparse_list), "symmetricMatrix")
   
