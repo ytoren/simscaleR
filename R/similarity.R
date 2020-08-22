@@ -77,7 +77,7 @@ sim_loopR <- function(X, metric, thresh = 0.0, n_cpu = 1, cl = NA, include_diag 
       for (j in i:n) {
         if ((i == j) & !include_diag) {next}
         s = row_sim(X[i,], X[j,])
-        if (s > thresh) {
+        if (s >= thresh) {
           row_sim_matrix <- rbind(row_sim_matrix, c(i, j, s))
         }
       }
@@ -154,8 +154,8 @@ sim_blocksR <- function(X, metric, row_blocks = 1, thresh = 0.0, n_cpu = 1, cl =
   S <- as(Reduce(cbind, S_sparse_list), "symmetricMatrix")
   
   if (!include_diag) {
-    Matrix::diag(S) <- 0
-    S <- Matrix::drop0(S)
+    diag(S) <- 0
+    S <- drop0(S)
   }
   
   return(S)
