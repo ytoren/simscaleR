@@ -1,14 +1,17 @@
 Package: simscaleR
 Type: Package
-Title: Large scale similarity calculations
+Title: Large Scale Similarity Matrix Tools
 Version: 0.1.0
-Author: person("Yizhar (Izzy)", "Toren", email = "ytoren+cran@gmail.com", role=c('cre','aut'))
+Authors@R: person(
+    given = "Yizhar (Izzy)", 
+    family = "Toren", 
+    email = "ytoren+cran@gmail.com", role=c('cre','aut'))
 Maintainer: Yizhar (Izzy) Toren <ytoren+cran@gmail.com>
-Description: This package calculates similarity with some considerations for large scale: 
-    * The ability to add a minimal similarity threshold and store sparse structures (instead of the full dense similarity structure).
-    * Control over the distribution of the calculation: from single-machine to fully distributed (with some smart compromises).
-    * "Injection" of domain knowledge, in the form of external information on groups of items that are similar.
-License: file LICENSE
+Description: Similarity matix calculations tools: 
+    * Thresholds & sparsity: The ability to add a minimal similarity threshold and store sparse structures (instead of the full dense similarity matrix).
+    * Smart parallelisation: Control over the distribution of the calculation, from single-machine to fully distributed (with some smart compromises).
+    * Domain knowledge "injection": How to combine external information on groups of items that are similar.
+License: Apache License v2 | file LICENSE
 URL: https://github.com/ytoren/simscaleR
 BugReports: https://github.com/ytoren/simscaleR/issues
 Encoding: UTF-8
