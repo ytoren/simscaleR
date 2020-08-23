@@ -46,8 +46,11 @@ estimate_local_resources <- function(do_gc = TRUE, logical = FALSE, headless = F
     if (verbose) {message(paste0('Detected ', n_cpu, ' usable cores'))}
   }
 
-  block_memory <- max_memory * ( 1.0 / n_cpu - overhead_factor)
-  if (block_memory < max_memory * min_block_fraction) {block_memory <- NA}
+  block_memory <- NA
+  if (!is.na(max_memory)) {
+    block_memory <- max_memory * ( 1.0 / n_cpu - overhead_factor)
+    if (block_memory < max_memory * min_block_fraction) {block_memory <- NA}
+  }
 
   return(list('n_cpu' = n_cpu, 'block_memory' = block_memory))
 }
