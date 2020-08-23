@@ -3,6 +3,7 @@
 
 #' @param do_gc Logical. Should we run garbage collection before estimating? Default is \code{TRUE}.
 #' @param headless Logical. Should we use all available CPUs or save one to keep the system interactive? Default is \code{FALSE}.
+#' @param logical Logical. Should we count logical CPUs or physical CPUs. Depending on your hardware / OS you might want to turn this on or off (in some cases virtualisation of additional cores will reduce performance)
 #' @param overhead_factor A number between (0,1). 
 #' What fraction of total memory should be reserved for cluster memory overhead? 
 #' Since any cluster has some memory overhead, we can't just divide all available memory between cores (we either run out of memory or start an slow & expensive writing to disk). 
@@ -21,7 +22,7 @@
 #' @importFrom utils memory.limit
 #' @importFrom parallel detectCores
 #' @export 
-estimate_local_resources <- function(do_gc = TRUE, headless = FALSE, overhead_factor = 0.05, min_block_fraction = 0.05, verbose = FALSE) {
+estimate_local_resources <- function(do_gc = TRUE, logical = FALSE, headless = FALSE, overhead_factor = 0.05, min_block_fraction = 0.05, verbose = FALSE) {
   os <- tolower(Sys.info()['sysname'])
   if (verbose) {message(paste0('System reports as \"', os, '\"'))}
   
@@ -35,7 +36,7 @@ estimate_local_resources <- function(do_gc = TRUE, headless = FALSE, overhead_fa
   } 
   if (is.infinite(max_memory)) {max_memory <- NA}
   
-  n_cpu <- parallel::detectCores(logical = FALSE)[1] - ifelse(headless, 1, 0)
+  n_cpu <- parallel::detectCores(logical = logical)[1] - ifelse(headless, 0, 1)
   if (n_cpu <= 0) {
     n_cpu <- 1
     if (verbose) {message('Found only 1 core in a n interactive system, or failed to detect cores correctly. Defaulting to 1 core')}
