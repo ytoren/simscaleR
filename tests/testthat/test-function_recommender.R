@@ -1,4 +1,4 @@
-context('Similarity function recommendation based on fixed resources')
+context('Similarity function recommendation based on fixed/dynamic resources')
 
 test_that('Recommend loop when no memory limit is detected', {
   resources <- list('n_cpu' = 4, 'block_memory' = NA)
