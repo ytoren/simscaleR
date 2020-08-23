@@ -5,7 +5,9 @@ Version: 0.1.0
 Authors@R: person(
     given = "Yizhar (Izzy)", 
     family = "Toren", 
-    email = "ytoren+cran@gmail.com", role=c('cre','aut'))
+    email = "ytoren+cran@gmail.com", role=c('cre','aut'),
+    comment = c(ORCID = "0000-0003-4484-3811")
+    )
 Maintainer: Yizhar (Izzy) Toren <ytoren+cran@gmail.com>
 Description: Similarity matrix calculations tools: 
     * Thresholds & sparsity: The ability to add a minimal similarity threshold and store sparse structures (instead of the full dense similarity matrix).
