@@ -1,6 +1,8 @@
 context('Automatic resource estimation')
 
 test_that('correct number of CPUs detected', {
+  expect_warning(estimate_local_resources(), regexp = 'Beta')
+  
   expect_equal(
     estimate_local_resources(verbose = TRUE)[['n_cpu']], 
     parallel::detectCores(logical = FALSE) - 1

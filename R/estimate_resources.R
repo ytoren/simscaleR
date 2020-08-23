@@ -1,5 +1,5 @@
-#' @title Simple resource estimator
-#' @description Estimate number of cores and available memory per core for the current system
+#' @title Simple resource estimator (BETA)
+#' @description Estimate number of cores and available memory per core for the current system. Memory estimation is still in BETA, so if you can do better please show me how! (github.com/ytoren/simscaleR/issues)
 
 #' @param do_gc Logical. Should we run garbage collection before estimating? Default is \code{TRUE}.
 #' @param headless Logical. Should we use all available CPUs or save one to keep the system interactive? Default is \code{FALSE}.
@@ -23,6 +23,8 @@
 #' @importFrom parallel detectCores
 #' @export 
 estimate_local_resources <- function(do_gc = TRUE, logical = FALSE, headless = FALSE, overhead_factor = 0.05, min_block_fraction = 0.05, verbose = FALSE) {
+  warning('Memory estimation is still in Beta. If you can do better please show me how! (github.com/ytoren/simscaleR/issues)')
+  
   os <- tolower(Sys.info()['sysname'])
   if (verbose) {message(paste0('System reports as \"', os, '\"'))}
   
