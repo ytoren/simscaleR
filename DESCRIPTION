@@ -7,14 +7,15 @@ Authors@R: person(
     family = "Toren", 
     email = "ytoren+cran@gmail.com", role=c('cre','aut'))
 Maintainer: Yizhar (Izzy) Toren <ytoren+cran@gmail.com>
-Description: Similarity matix calculations tools: 
+Description: Similarity matrix calculations tools: 
     * Thresholds & sparsity: The ability to add a minimal similarity threshold and store sparse structures (instead of the full dense similarity matrix).
-    * Smart parallelisation: Control over the distribution of the calculation, from single-machine to fully distributed (with some smart compromises).
-    * Domain knowledge "injection": How to combine external information on groups of items that are similar.
+    * Smarter parallel calculations: Control over the distribution of the calculation, with automatic resource estimation (beta) to help use memory/CPUs efficiently.
+    * Domain knowledge "injection": How to combine external information on sets of items that belong to a higher-level entity.
 License: Apache License Version 2.0 | file LICENSE
 URL: https://github.com/ytoren/simscaleR
 BugReports: https://github.com/ytoren/simscaleR/issues
 Encoding: UTF-8
+Language: en-US
 LazyData: true
 Imports:
     Matrix,

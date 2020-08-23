@@ -11,7 +11,7 @@ merge_by_partition(m, partition, agg = Matrix::colSums)
 
 \item{partition}{A list of integer vectors. Each vector can contain all rows in the group or just first & last rows (min/max will be used to extract range)}
 
-\item{agg}{Function. The function that will be called to merge the rows. Must return a matrix with the same number of columns and as many rows as needed. Default is `colSums`.}
+\item{agg}{Function. The function that will be called to merge the rows. Must return a matrix with the same number of columns and as many rows as needed. Default is \code{colSums}.}
 }
 \value{
 A new matrix with less (or more?) rows, depending on the aggregation function.

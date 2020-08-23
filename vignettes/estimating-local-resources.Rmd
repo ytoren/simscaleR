@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 
 One of the biggest constraints for calculating similarity in-memory is the sheer size of the similarity matrix. for example, when calculating the "all vs. all" similarity for $n$ observations, the number of cells in the similarity matrix grows on the scale of $n^2$. 
 
-A naive solution (which also generalises well to any kind of similarity metric) would be to iterate over all row combinations (a `for` loop within a `for` loop), calculate the similarity measure for each pair, and write each result to file(s). This approach comes with a heavy price - `for` loops in R tend to be slow, and the act of writing to disk has some overhead, even if (as is the case for this package) we don't intend to use all the values. 
+A naive solution (that can be extended to many types of similarity metrics) would be to iterate over all row combinations (a `for` loop within a `for` loop), calculate the similarity measure for each pair, and write each result to file(s). This approach comes with a heavy price - `for` loops in R tend to be slow, and the act of writing to disk has some overhead, even if (as is the case for this package) we don't intend to use all the values. 
 
 Therefore we are interested in 2 pieces of information: 
 
@@ -114,7 +114,7 @@ We can use cap we obtained to decide which of the 2 options we take (as long as 
 
 ### Multi core 
 
-The memory cap we calculated was for a single core using all available memory. In a multi-core scenario we have to consider the fact that memory is shared by all cores on the same machine. We should also consider the fact that most parallelisation mechanisms have some memory overhead per-core (for example a FORK cluster replicated the entire environment per core).
+The memory cap we calculated was for a single core using all available memory. In a multi-core scenario we have to consider the fact that memory is shared by all cores on the same machine. We should also consider the fact that most parallel cluster mechanisms have some memory overhead per-core (for example a FORK cluster replicated the entire environment per core).
 
 All of these considerations are encapsulated by the `estimate_local_resource` function and `sim_auto_scale` function in this package (see documentation).
 

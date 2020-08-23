@@ -1,9 +1,9 @@
 #' @title Simple resource estimator (BETA)
-#' @description Estimate number of cores and available memory per core for the current system. Memory estimation is still in BETA, so if you can do better please show me how! (github.com/ytoren/simscaleR/issues)
+#' @description Estimate number of cores and available memory per core for the current system. Memory estimation is still in BETA, so if you can do better please show me how! (https://github.com/ytoren/simscaleR/issues)
 
 #' @param do_gc Logical. Should we run garbage collection before estimating? Default is \code{TRUE}.
 #' @param headless Logical. Should we use all available CPUs or save one to keep the system interactive? Default is \code{FALSE}.
-#' @param logical Logical. Should we count logical CPUs or physical CPUs. Depending on your hardware / OS you might want to turn this on or off (in some cases virtualisation of additional cores will reduce performance)
+#' @param logical Logical. Should we count logical CPUs or physical CPUs. Depending on your hardware / OS you might want to turn this on or off (in some cases using virtual cores will reduce performance)
 #' @param overhead_factor A number between (0,1). 
 #' What fraction of total memory should be reserved for cluster memory overhead? 
 #' Since any cluster has some memory overhead, we can't just divide all available memory between cores (we either run out of memory or start an slow & expensive writing to disk). 
@@ -23,7 +23,7 @@
 #' @importFrom parallel detectCores
 #' @export 
 estimate_local_resources <- function(do_gc = TRUE, logical = FALSE, headless = FALSE, overhead_factor = 0.05, min_block_fraction = 0.05, verbose = FALSE) {
-  warning('Memory estimation is still in Beta. If you can do better please show me how! (github.com/ytoren/simscaleR/issues)')
+  warning('Memory estimation is still in Beta. If you can do better please show me how! https://github.com/ytoren/simscaleR/issues')
   
   os <- tolower(Sys.info()['sysname'])
   if (verbose) {message(paste0('System reports as \"', os, '\"'))}

@@ -39,7 +39,7 @@ merge_rows_by_partition_ <- function(m, partition, merge_order, agg = Matrix::co
 #' @description Merge matrix rows according to a continuous partition of row indices 
 #' @param m A matrix
 #' @param partition A list of integer vectors. Each vector can contain all rows in the group or just first & last rows (min/max will be used to extract range)
-#' @param agg Function. The function that will be called to merge the rows. Must return a matrix with the same number of columns and as many rows as needed. Default is `colSums`.
+#' @param agg Function. The function that will be called to merge the rows. Must return a matrix with the same number of columns and as many rows as needed. Default is \code{colSums}.
 #' @return A new matrix with less (or more?) rows, depending on the aggregation function.
 merge_by_partition <- function(m, partition, agg = Matrix::colSums) {
   ## Check that partition is... a partition

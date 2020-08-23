@@ -16,7 +16,7 @@ estimate_local_resources(
 \arguments{
 \item{do_gc}{Logical. Should we run garbage collection before estimating? Default is \code{TRUE}.}
 
-\item{logical}{Logical. Should we count logical CPUs or physical CPUs. Depending on your hardware / OS you might want to turn this on or off (in some cases virtualisation of additional cores will reduce performance)}
+\item{logical}{Logical. Should we count logical CPUs or physical CPUs. Depending on your hardware / OS you might want to turn this on or off (in some cases using virtual cores will reduce performance)}
 
 \item{headless}{Logical. Should we use all available CPUs or save one to keep the system interactive? Default is \code{FALSE}.}
 
@@ -41,5 +41,5 @@ A list with:
 }
 }
 \description{
-Estimate number of cores and available memory per core for the current system. Memory estimation is still in BETA, so if you can do better please show me how! (github.com/ytoren/simscaleR/issues)
+Estimate number of cores and available memory per core for the current system. Memory estimation is still in BETA, so if you can do better please show me how! (https://github.com/ytoren/simscaleR/issues)
 }
