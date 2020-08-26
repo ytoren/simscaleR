@@ -1,8 +1,8 @@
 # simscaleR
 
 Large scale similarity calculations with support for:
-* Thresholds & a sparse representation of the similarity matrix (based on the `Matrix` package)
-* Parallel of calculations, locally or using a standard R cluster object (from `parallel` package). We also include helper functions to decide how to split the calculations efficiently  
+* Thresholds & sparse representations of the similarity matrix (based on the `Matrix` package)
+* Parallel calculations, locally or using a standard R cluster object (from `parallel` package). We also include helper functions to decide how to split the calculations efficiently  
 * "Injection" of domain knowledge, in the form of external information on groups of nodes that belong to the same higher-level entity. See details & examples below.
 
 ## Background
