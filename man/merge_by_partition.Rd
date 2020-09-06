@@ -2,20 +2,30 @@
 % Please edit documentation in R/merge_by_partition.R
 \name{merge_by_partition}
 \alias{merge_by_partition}
-\title{Merge matrix rows by a partition}
+\title{Merge matrix rows/columns by a partition}
 \usage{
-merge_by_partition(m, partition, agg = Matrix::colSums)
+merge_by_partition(
+  m,
+  partition,
+  agg = Matrix::colSums,
+  n_cpu = 1,
+  check = FALSE
+)
 }
 \arguments{
 \item{m}{A matrix}
 
-\item{partition}{A list of integer vectors. Each vector can contain all rows in the group or just first & last rows (min/max will be used to extract range)}
+\item{partition}{A list of integer vectors, which makes a full partition of the rows of \code{m}}
 
 \item{agg}{Function. The function that will be called to merge the rows. Must return a matrix with the same number of columns and as many rows as needed. Default is \code{colSums}.}
+
+\item{n_cpu}{Integer. Number of cores to be used for the calculation, passed to the parameter \code{mc.cores} of the function \code{mclapply}. Default is 1 which means the "regular" \code{lapply} will be used.}
+
+\item{check}{Logical. Should the function check if the provided partition is valid? Default is \code{FALSE}.}
 }
 \value{
 A new matrix with less (or more?) rows, depending on the aggregation function.
 }
 \description{
-Merge matrix rows according to a continuous partition of row indices
+Merge matrix rows/columns according to a partition of row indices
 }
