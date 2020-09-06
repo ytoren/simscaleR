@@ -9,6 +9,7 @@ ERROR_MESSAGE_METRIC = 'Only cosine and Hamming metric are supported (and custom
 #' @importFrom Matrix sparseMatrix
 #' @importFrom Matrix drop0
 #' @importFrom Matrix diag
+#' @importFrom Matrix t
 #' @importFrom methods as
 #' @importFrom parallel makeCluster
 #' @importFrom parallel stopCluster
@@ -94,12 +95,17 @@ sim_loopR <- function(X, metric, thresh = 0.0, n_cpu = 1, cl = NA, include_diag 
 
 
 #' @keywords internal
-cosine_similarity_ <- function(X, Y) {
-  return(X %*% Y)
+cosine_self_similarity_ <- function(X, row_range) {
+  return(
+    X %*% t(X[row_range, , drop = FALSE])
+  )
 }
 #' @keywords internal
-hamming_similarity_ <- function(X,Y) {
-  return((X %*% Y + (1 - X) %*% (1 - Y)) / ncol(X))
+hamming_self_similarity_ <- function(X, row_range) {
+  Y = X[row_range, , drop = FALSE]
+  return(
+    (X %*% t(Y) + (1 - X) %*% t(1 - Y)) / ncol(X)
+  )
 }
 
 
@@ -113,10 +119,10 @@ sim_blocksR <- function(X, metric, row_blocks = 1, thresh = 0.0, n_cpu = 1, cl =
     if (tolower(metric) == 'cosine') {
       storage.mode(X) <- 'numeric'
       X <- X / sqrt(rowSums(X^2))
-      sim_f <- cosine_similarity_
+      sim_f <- cosine_self_similarity_
     } else if (tolower(metric) == 'hamming') {
       storage.mode(X) <- 'logical'
-      sim_f <- hamming_similarity_
+      sim_f <- hamming_self_similarity_
     } else {stop(ERROR_MESSAGE_METRIC)}
   } else {stop(ERROR_MESSAGE_METRIC)}
 
@@ -125,8 +131,7 @@ sim_blocksR <- function(X, metric, row_blocks = 1, thresh = 0.0, n_cpu = 1, cl =
     
     for (b in 1:row_blocks) {
       row_range <- (1 + (b - 1) * rows):min((b * rows), nrow(X))
-      f <- ifelse(length(row_range) > 1, t, identity) # single row is a transposed vector
-      Sb <- sim_f(X, f(X[row_range, ]))
+      Sb <- sim_f(X, row_range)
       
       if (thresh > 0) {Sb[Sb < thresh] <- 0}
       S_sparse_list[[b]] <- Matrix(Sb, sparse = TRUE)
@@ -144,8 +149,7 @@ sim_blocksR <- function(X, metric, row_blocks = 1, thresh = 0.0, n_cpu = 1, cl =
     
     S_sparse_list <- foreach(b = 1:row_blocks, .packages = 'Matrix') %dopar% {
       row_range <- (1 + (b - 1) * rows):min((b * rows), nrow(X))
-      f <- ifelse(length(row_range) > 1, t, identity) # single row is a transposed vector
-      Sb <- sim_f(X, f(X[row_range, ]))
+      Sb <- sim_f(X, row_range)
       
       if (thresh > 0) {Sb[Sb < thresh] <- 0}
       Matrix(Sb, sparse = TRUE)

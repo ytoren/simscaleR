@@ -14,18 +14,22 @@ test_that('Row cosine sparse similarity calulation', {
   
   sim_expected <- matrix(c(1.0, 0.6708204, 0.9243651, 0.6708204, 1.0, 0.3594684, 0.9243651, 0.3594684, 1), ncol = 3)
   sim_expected <- methods::as(Matrix::Matrix(sim_expected, sparse = TRUE), "symmetricMatrix")
+  
   expect_equal(sim_blocksR(X, metric = 'cosine'), sim_expected, tolerance = 1e-07)
   expect_equal(sim_blocksR(X, metric = 'cosine', row_blocks = 2), sim_expected, tolerance = 1e-07)
   expect_equal(sim_blocksR(X, metric = 'cosine', row_blocks = 3), sim_expected, tolerance = 1e-07)
   expect_equal(sim_blocksR(X, metric = 'cosine', row_blocks = 3, n_cpu = 2), sim_expected, tolerance = 1e-07)
+  
   expect_equal(sim_loopR(X, metric = 'cosine', n_cpu = 1), sim_expected, tolerance = 1e-07)
   expect_equal(sim_loopR(X, metric = 'cosine', n_cpu = 2), sim_expected, tolerance = 1e-07)
   
   sim_expected[sim_expected < 0.9] <- 0
   sim_expected <- methods::as(sim_expected, "symmetricMatrix")
+  
   expect_equal(sim_blocksR(X, metric = 'cosine', thresh = 0.9, row_blocks = 2), sim_expected, tolerance = 1e-07)
   expect_equal(sim_blocksR(X, metric = 'cosine', thresh = 0.9, row_blocks = 3), sim_expected, tolerance = 1e-07)
   expect_equal(sim_blocksR(X, metric = 'cosine', thresh = 0.9), sim_expected, tolerance = 1e-07)
+  
   expect_equal(sim_loopR(X, metric = 'cosine', thresh = 0.9, n_cpu = 1), sim_expected, tolerance = 1e-07)
   expect_equal(sim_loopR(X, metric = 'cosine', thresh = 0.9, n_cpu = 2), sim_expected, tolerance = 1e-07)
   
