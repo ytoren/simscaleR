@@ -1,5 +1,6 @@
 ---
 title: "Estimating local resources"
+author: "Yizhar (Izzy) Toren"
 output: rmarkdown::html_vignette
 date: "`r Sys.Date()`"
 vignette: >

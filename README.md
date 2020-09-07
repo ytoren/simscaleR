@@ -25,13 +25,13 @@ This package contains tools for handling both of the above problems.
 
 
 ## Installation
-`devtools::install_github(repo = 'ytoren/simscaleR')`
+`devtools::install_github(repo = 'ytoren/simscaleR', build_vignettes = TRUE)`
 
 ## Usage
 
 ### Similarity calculations 
 
-The package contains functions that automatically estimate resources of the local machine. See [vignette](vignettes/estimating-local-resources.Rmd). You can also control the calculation manually using lower level functions. See `?sim_blocksR`
+The package contains functions that automatically estimate resources of the local machine. You can read the vignette in `vignette('estimating-local-resources', package='simscaleR')`. You can also control the calculation manually using lower level functions. See `?sim_blocksR`
 
 ### Similarity matrix manipulation \ domain knowledge injection
 
