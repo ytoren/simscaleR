@@ -21,7 +21,7 @@ This package contains tools for handling both of the above problems.
 
 * Data is numeric (binary, integers or real numbers). For categorical data please convert first (embedding, 1-hot encoding or other methods)
 
-* The $N\times M$ matrix of features ($N$ rows, $M$ features) can be contained in memory, or at least expose a `Matrix` API. 
+* The `NxM` matrix of features (`N` rows, `M` features) can be contained in memory, or at least expose a `Matrix` API. 
 
 
 ## Installation
@@ -31,7 +31,7 @@ This package contains tools for handling both of the above problems.
 
 ### Similarity calculations 
 
-The package contains functions that automatically estimate resources of the local machine. See [vignette]('vignettes/estimating-local-resources.Rmd'). You can also control the calculation manually using lower level functions. See `?sim_blocksR`
+The package contains functions that automatically estimate resources of the local machine. See [vignette](vignettes/estimating-local-resources.Rmd). You can also control the calculation manually using lower level functions. See `?sim_blocksR`
 
 ### Similarity matrix manipulation \ domain knowledge injection
 
