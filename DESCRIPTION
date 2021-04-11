@@ -2,6 +2,12 @@ Package: simscaleR
 Type: Package
 Title: Large Scale Similarity Matrix Tools
 Version: 0.1.0
+Author: person(
+    given = "Yizhar (Izzy)", 
+    family = "Toren", 
+    email = "ytoren+cran@gmail.com", role=c('cre','aut'),
+    comment = c(ORCID = "0000-0003-4484-3811")
+    )
 Authors@R: person(
     given = "Yizhar (Izzy)", 
     family = "Toren", 

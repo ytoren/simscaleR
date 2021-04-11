@@ -1,3 +1,5 @@
+[Back to my projects page](/)
+
 # simscaleR
 
 Large scale similarity calculations with support for:
@@ -7,7 +9,7 @@ Large scale similarity calculations with support for:
 
 ## Background
 
-A smart dev-ops engineer once told me: 
+A smart dev-ops engineer once told me:
 > Before I give you a cluster, show me you can fully utilize a single machine
 
 With that in mind I created this package to share my experiences working on large scale similarity projects. The main problems I've encountered were
@@ -16,13 +18,13 @@ With that in mind I created this package to share my experiences working on larg
 
 2. Injecting domain knowledge / quotient similarity: In many cases similarity is calculated at different levels - for example similarity between messages to find similar users or similarity between images to find similar products. These cases require a way to aggregate similarities between sets of arbitrary lower level entities (messages / images) to represent similarity between higher level entities (users / products).  
 
-This package contains tools for handling both of the above problems. 
+This package contains tools for handling both of the above problems.
 
 ### Assumptions
 
 * Data is numeric (binary, integers or real numbers). For categorical data please convert first (embedding, 1-hot encoding or other methods)
 
-* The `NxM` matrix of features (`N` rows, `M` features) can be contained in memory, or at least expose a `Matrix` API. 
+* The `NxM` matrix of features (`N` rows, `M` features) can be contained in memory, or at least expose a `Matrix` API.
 
 
 ## Installation
@@ -30,15 +32,12 @@ This package contains tools for handling both of the above problems.
 
 ## Usage
 
-### Similarity calculations 
+### Similarity calculations
 
 The package contains functions that automatically estimate resources of the local machine. You can read the vignette in `vignette('estimating-local-resources', package='simscaleR')`. You can also control the calculation manually using lower level functions. See `?sim_blocksR`
 
 ### Similarity matrix manipulation \ domain knowledge injection
 
-* Aggregate rows/columns of the similarity matrix using an aggregation function (default is a simple sum). See `?merge_by_partition`. The end result is a similarity smaller similarity matrix that represents similarity between higher level entities. 
+* Aggregate rows/columns of the similarity matrix using an aggregation function (default is a simple sum). See `?merge_by_partition`. The end result is a similarity smaller similarity matrix that represents similarity between higher level entities.
 
 * Shuffle matrix rows, so that all rows that belong to the same entity are next to one another (in case they are not already sorted this way). See `?sim_matrix_shuffle` and `?sparse_block_matrix`.
-
-
-
